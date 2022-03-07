@@ -15,7 +15,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages("src"),
     install_requires=[
-        'torch>=1.5,<=1.10',
+        'torch==1.10',
         'hydra-core==1.0.6',
         'tensorboard==2.4.1',
         'matplotlib==3.4.1',
@@ -27,7 +27,7 @@ setup(
         'tqdm==4.60.0',
         'opt-einsum==3.3.0',
         'wandb==0.12.7',
-        "ujson"
+        "ujson==5.1.0"
     ], 
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -1,5 +1,7 @@
 cwd: ???
 
+use_gpu: False
+
 defaults:
   - train/conll
   

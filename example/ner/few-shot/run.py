@@ -1,8 +1,8 @@
 import os
 
 import hydra
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]='1'
+# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"]='1'
 import logging
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
@@ -15,13 +15,14 @@ from deepke.name_entity_re.few_shot.module.train import Trainer
 from deepke.name_entity_re.few_shot.module.metrics import Seq2SeqSpanMetric
 from deepke.name_entity_re.few_shot.utils.util import get_loss, set_seed
 from deepke.name_entity_re.few_shot.module.mapping_type import mit_movie_mapping, mit_restaurant_mapping, atis_mapping
+import torch
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-import wandb
+# import wandb
 
-writer = wandb.init(project="DeepKE_NER_Few")
+# writer = wandb.init(project="DeepKE_NER_Few")
 
 logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt = '%m/%d/%Y %H:%M:%S',
@@ -67,6 +68,14 @@ MAPPING = {
 
 @hydra.main(config_path="conf/config.yaml")
 def main(cfg):
+    # Use gpu or not
+    if cfg.use_gpu and torch.cuda.is_available():
+        # device = torch.device('cuda', cfg.gpu_id)
+        cfg.device = "cuda"
+    else:
+        # device = torch.device('cpu')
+        cfg.device = "cpu"
+
     cwd = utils.get_original_cwd()
     cfg.cwd = cwd
     print(cfg)
@@ -102,7 +111,7 @@ def main(cfg):
     loss = get_loss
 
     trainer = Trainer(train_data=train_dataloader, dev_data=dev_dataloader, test_data=None, model=model, args=cfg, logger=logger, loss=loss,
-                      metrics=metrics, writer=writer)
+                      metrics=metrics, writer=None)
     trainer.train()
 
 
